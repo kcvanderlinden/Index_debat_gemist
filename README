@@ -1,4 +1,4 @@
 Ze Werken Voor Ons
 
 Dit is een project gebasseerd op het idee van de website 'They Work For Us'. 
-Door middel van de Python Library BeautifulSoup wordt de website van de Tweede Kamer gescraped en kan er met zoektermen gezocht worden in debatten.
+Door middel van de Python Library BeautifulSoup wordt de website van de Debat Gemist - Tweede Kamer gescraped en kan er met zoektermen gezocht worden in debatten.
