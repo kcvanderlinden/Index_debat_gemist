@@ -22,16 +22,15 @@ for i in range(0,2): #Hoe veel pagina's je wilt doorzoeken. Per pagina worden er
     r = rall.content
     soup = BeautifulSoup(r,"lxml") #Open de pagina's in BeautifulSoup voor webscraping.
     debates = soup.find_all('div', class_="data")
-    
     for debate in debates:
         debate_sub = debate.div.h2.text
         found_statements = debate.find_all('li')
         count = count + 1
-        
+        #list_url = []
         for s in found_statements:
             s_url = s.a
             s_url = s_url['href']
-            list_url.append(s_url)
+            list_url.append(g_url)
             unformatted_statement = s.text
             statement = re.sub('\s+', " ", unformatted_statement)
             
