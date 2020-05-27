@@ -30,7 +30,6 @@ for i in range(0,2): #Hoe veel pagina's je wilt doorzoeken. Per pagina worden er
         for s in found_statements:
             s_url = s.a
             s_url = s_url['href']
-            list_url.append(g_url)
             unformatted_statement = s.text
             statement = re.sub('\s+', " ", unformatted_statement)
             
