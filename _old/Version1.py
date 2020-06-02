@@ -6,7 +6,7 @@ import csv
 from datetime import datetime
 import re
 
-Searchterm = 'bier'
+Searchterm = "bier"
 
 now = datetime.now()
 current_time = now.strftime("%d%m%Y-%H%M")
@@ -16,7 +16,7 @@ data = pd.DataFrame(columns = cols)
 
 count = 0
 
-for i in range(0,2): #Hoe veel pagina's je wilt doorzoeken. Per pagina worden er op debatgemist.tweedekamer.nl 10 debatten laten zien.
+for i in range(0,4): #Hoe veel pagina's je wilt doorzoeken. Per pagina worden er op debatgemist.tweedekamer.nl 10 debatten laten zien.
     url = "https://debatgemist.tweedekamer.nl/zoeken?search_api_views_fulltext=" + Searchterm + "&page=" + str(i)
     rall = requests.get(url)
     r = rall.content
