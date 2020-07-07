@@ -7,20 +7,22 @@ from datetime import datetime
 from datetime import timedelta
 import re
 
-#Version 5.1
+#Version 5.2
 
-Searchterm = 'staaij'  #Searchterm
-c_pages = 1  #How many pages you want to search through
+print("What is the word you want to search?")
+Searchterm = input() #Searchterm
+print("How many pages do you want to scrape?")
+c_pages = int(input()) #How many pages you want to search through
 
 begin_time = datetime.now()
 
-cols = ['Date', 'Name', 'Party', 'Function', 'Statement', 'Debate Subject', 'Type of debate', 'Particular committee', 'Speaker', 'URL', 'ID']
+cols = ['Date', 'Name', 'Party', 'Function', 'Statement', 'Debate_Subject', 'Type_of_debate', 'Particular_committee', 'Speaker', 'URL', 'ID']
 data = pd.DataFrame(columns = cols)
 
 count, prev_name, prev_url, statement_start_prev = 0, "", "", 0
 
 #The function of a minister or secretary is written per name in  different dataset, because it couldn't be easilly retrieved from the webpages. 
-Minis = pd.read_excel('Ministers.xlsx')
+Minis = pd.read_excel('Ministers.xlsx').fillna(begin_time)
 
 #The range stands for the number of pages counting from 0 you want to scrape from the search result.
 for i in range(0, c_pages): 
@@ -28,7 +30,7 @@ for i in range(0, c_pages):
     soup = BeautifulSoup(requests.get(url).content, "lxml") #This is initially where the pages are being loaded.
     debates = soup.find_all('div', class_="data")
     
-    print("Reading page", i +1, "of", c_pages)
+    print("Reading page", i + 1, "of", c_pages)
     
     #Here we grab every piece in the html where a debate is listed wherein the search term is found by the site.    
     for debate in debates:
@@ -46,15 +48,8 @@ for i in range(0, c_pages):
             spl_party = re.split('\s|(?<!\d)[.](?!\d)', spl_statement[0])
             party = spl_party[-1]
             
-            function = 'Unknown'
             if party == '-':
                 name = " ".join(spl_party[1:-1])
-                
-                for m in Minis['Name']:
-                    if name[-1] in m:
-                        function = Minis.Function[Minis.Name == m].to_string(index=False)
-                    else:
-                        m = ''
             else:
                 name = " ".join(spl_party[1:-2])
                 function = 'Kamerlid'
@@ -77,7 +72,8 @@ for i in range(0, c_pages):
                 st_soup = BeautifulSoup(requests.get(s_url).content,"lxml")
                 date = re.split('\W', st_soup.find('div',class_="meta").time['datetime'])
                 part_find = st_soup.find('div',class_="meta")
-                date_strf = datetime(int(date[0]), int(date[1]), int(date[2])).strftime("%b %d %Y")
+                date_f = datetime(int(date[0]), int(date[1]), int(date[2]))
+                date_strf = date_f.strftime("%b %d %Y")
                 deb_and_com = part_find.find_all('span')
                 typ_deb = deb_and_com[-1].text
                 typ_com = deb_and_com[0].text
@@ -87,15 +83,18 @@ for i in range(0, c_pages):
                 statement_time = str(timedelta(seconds=statement_start) + timedelta(hours=int(time[6]), minutes=int(time[7])))
                 if typ_com == typ_deb:
                     typ_com = 'Not a particular committee'
+                function = Minis.loc[(Minis['Name'] == name) & (Minis['start_date'] < date_f) & (Minis.end_date > date_f)].Function.to_string(index=False)
+                if function == 'Series([], )':
+                    function = 'Kamerlid'
 
-                data = data.append({'Date': date_strf, 'Name': name, 'Party': party, 'Function': function, 'Statement': statement, 'Debate Subject': debate_sub, 'Speaker': speaker, 'Type of debate': typ_deb, 'Particular committee': typ_com, 'URL': s_url, 'ID': ident_num},ignore_index=True)
+                data = data.append({'Date': date_strf, 'Name': name, 'Party': party, 'Function': function, 'Statement': statement, 'Debate_Subject': debate_sub, 'Speaker': speaker, 'Type_of_debate': typ_deb, 'Particular_committee': typ_com, 'URL': s_url, 'ID': ident_num},ignore_index=True)
 
 end_time = datetime.now()
 completion_time = end_time - begin_time
 current_time = end_time.strftime("%d%m%Y-%H%M")
 
 #Ultimatly, we want to analyse the data. So to make things easier, we automatically write the data to a .csv file
+#Write_xlsx = data.to_excel(Searchterm + '-' + current_time + '.xlsx')
 Write_csv = data.to_csv(Searchterm + '-' + current_time + '.csv')
 
-print(soup.title.text)
-print(completion_time)
+print("It took me", completion_time, "to search for", Searchterm, "on", c_pages, "page(s).")
