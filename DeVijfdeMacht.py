@@ -83,7 +83,7 @@ for i in range(0, c_pages):
                 statement_time = str(timedelta(seconds=statement_start) + timedelta(hours=int(time[6]), minutes=int(time[7])))
                 if typ_com == typ_deb:
                     typ_com = 'Not a particular committee'
-                function = Minis.loc[(Minis['Name'] == name) & (Minis['start_date'] < date_f) & (Minis.end_date > date_f)].Function.to_string(index=False)
+                function = Minis.loc[(Minis['Name'] == name) & (Minis['start_date'] < date_f) & (Minis.end_date > date_f)].Function.to_string(index=False).strip()
                 if function == 'Series([], )':
                     function = 'Kamerlid'
 
@@ -94,6 +94,7 @@ completion_time = end_time - begin_time
 current_time = end_time.strftime("%d%m%Y-%H%M")
 
 #Ultimatly, we want to analyse the data. So to make things easier, we automatically write the data to a .csv file
+
 #Write_xlsx = data.to_excel(Searchterm + '-' + current_time + '.xlsx')
 Write_csv = data.to_csv(Searchterm + '-' + current_time + '.csv')
 
