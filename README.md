@@ -1,7 +1,5 @@
-# De Vijfde Macht - The Fifth Power
->Een tool om debatten van de Tweede Kamer te gebruiken in Data Science.
-
-The Trias Politica is an old concept about the three powers of government: legislative, executive and judiciary power. In the last era, the media, through its growing influence on the people and politics, was ascribed the term the fourth power. Well, nowadays through technology, anyone can have influence on the governmental system. With the help of Data Science and some programming, any living soul could potentially have the data to act as a controlling body of the government. This is why I called this little project 'the Fifth Power' (in Dutch 'de Vijfde Macht).
+# Indexing Debates
+>Indexing information from search results from https://debatgemist.tweedekamer.nl to a csv or Excel dataset.
 
 ---
 
